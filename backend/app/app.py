@@ -12,6 +12,7 @@ from database import Base, get_db, engine
 from classifier_tea import TEAClassifier
 from schema import Screening, Result
 from dashboard_endpoints import dashboard_router
+from sqlalchemy import text 
 
 
 # Criar tabelas se não existirem
@@ -75,7 +76,7 @@ def home():
 def health_check(db: Session = Depends(get_db)):
     try:
         # Testar conexão com banco
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         return {
             "status": "healthy",
             "model_loaded": True,

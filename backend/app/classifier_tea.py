@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
@@ -9,10 +7,6 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_curve, 
 from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score, precision_recall_curve, roc_auc_score)
 from sklearn.utils.class_weight import compute_class_weight
 import joblib
-import pickle
-import json
-from datetime import datetime
-import os
 
 class TEAClassifier:
     """

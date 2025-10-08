@@ -62,9 +62,8 @@ class Result(Base):
     id = Column(Integer, primary_key=True, index=True)
     # screening_id = Column(Integer, nullable=False)
     screening_id = Column(Integer, ForeignKey('tea_screening.screenings.id'), nullable=False)
-
     prediction = Column(String(50), nullable=False)
-    confidence = Column(String(50))
+    confidence = Column(Float)
     model_version = Column(String(50))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

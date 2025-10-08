@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Banco de Dados
+  postgres:
+    image: postgres:15-alpine
+    container_name: tea_postgres
+    environment:
+      POSTGRES_DB: tea_screening_db
+      POSTGRES_USER: tea_user
+      POSTGRES_PASSWORD: tea_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tea_user -d tea_screening_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tea_backend
+    environment:
+      DATABASE_URL: postgresql://tea_user:tea_password@postgres:5432/tea_screening_db?options=-csearch_path%3Dtea_screening
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/app:/app
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: tea_frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
